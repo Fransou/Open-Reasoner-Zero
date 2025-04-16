@@ -743,7 +743,7 @@ class CriticRayActorBase(RayActor):
 
         ds_config = strategy.get_ds_train_config(is_actor=False)
         with torch.device("meta"):
-            AutoModel.from_pretrained(pretrain, trust_remote_code=True)
+            AutoModel.from_pretrained(pretrain, trust_remote_code=True, device_map="meta")
         critic = get_llm_for_sequence_regression(
             pretrain,
             "critic",
