@@ -281,10 +281,13 @@ class RayPPOTrainer:
             )
             logger.info(f"experiences size: {len(experiences)}")
 
-        # 2. visualization generated results example
-        vis = self._detokenize(experiences[0].sequences[0][: int(experiences[0].info["total_length"].flatten()[0])])
-        self.writer.add_text("generated_sequences", vis, self.global_step)
-        self.writer.flush()
+        # 2. visualization generated results examples
+        n_to_log = min(len(experiences), 8)
+        for i in range(n_to_log):
+            expe = experiences[i]
+            vis = self._detokenize(expe.sequences[0][: int(expe.info["total_length"].flatten()[0])])
+            self.writer.add_text("generated_sequences", vis, self.global_step, additional_info = expe.info)
+            self.writer.flush()
 
         # 3. calculate advantages and returns / along with tensorboard logging
         avg_rewards = 0
