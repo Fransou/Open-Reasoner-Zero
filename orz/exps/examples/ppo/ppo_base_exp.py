@@ -184,8 +184,8 @@ class BasePPOExp(BaseExp):
     @cached_property
     def get_colocate_pg(self):
         if self.cfg.colocate_all:
-            print("EEEEEEEEEEEEHOOOOOOOOH")
-            print(self.cfg.vllm_num_engines)
+            print("AAAAAAAAAAAAAAAAAAA")
+            print(self.cfg.colocate_all)
             pg = placement_group([{"GPU": 1, "CPU": 1}] * self.cfg.vllm_num_engines, strategy="PACK")
             ray.get(pg.ready())
             return pg
