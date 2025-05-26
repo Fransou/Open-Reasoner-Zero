@@ -183,6 +183,8 @@ class BasePPOExp(BaseExp):
 
     @cached_property
     def get_colocate_pg(self):
+        print("ABABABAABABABA")
+        print(self.cfg.colocate_all)
         if self.cfg.colocate_all:
             print("AAAAAAAAAAAAAAAAAAA")
             print(self.cfg.colocate_all)
