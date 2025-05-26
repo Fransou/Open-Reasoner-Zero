@@ -126,6 +126,7 @@ class BasePPOExp(BaseExp):
     @cached_property
     def trainer(self):
         vllm_engines = self.create_inference_engine()
+        raise ValueError("This is a base experiment class, please use a specific experiment class instead.")
         return RayPPOTrainer(
             cfg=self.cfg,
             strategy=self.strategy,
@@ -185,8 +186,6 @@ class BasePPOExp(BaseExp):
     def get_colocate_pg(self):
         print("ABABABAABABABA")
         print(self.cfg.colocate_all)
-        raise ValueError("colocate_all is not supported in BasePPOExp, please set it to False.")
-
         if self.cfg.colocate_all:
             print("AAAAAAAAAAAAAAAAAAA")
             print(self.cfg.colocate_all)
