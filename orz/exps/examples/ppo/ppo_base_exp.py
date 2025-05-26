@@ -188,6 +188,7 @@ class BasePPOExp(BaseExp):
         if self.cfg.colocate_all:
             print("AAAAAAAAAAAAAAAAAAA")
             print(self.cfg.colocate_all)
+            raise ValueError("colocate_all is not supported in BasePPOExp, please set it to False.")
             pg = placement_group([{"GPU": 1, "CPU": 1}] * self.cfg.vllm_num_engines, strategy="PACK")
             ray.get(pg.ready())
             return pg
