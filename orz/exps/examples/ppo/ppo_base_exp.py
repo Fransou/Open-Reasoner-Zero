@@ -126,7 +126,6 @@ class BasePPOExp(BaseExp):
     @cached_property
     def trainer(self):
         vllm_engines = self.create_inference_engine()
-        raise ValueError("This is a base experiment class, please use a specific experiment class instead.")
         return RayPPOTrainer(
             cfg=self.cfg,
             strategy=self.strategy,
@@ -184,7 +183,6 @@ class BasePPOExp(BaseExp):
 
     @cached_property
     def get_colocate_pg(self):
-        print(self.cfg.colocate_all)
         if self.cfg.colocate_all:
             pg = placement_group([{"GPU": 1, "CPU": 1}] * self.cfg.vllm_num_engines, strategy="PACK")
             ray.get(pg.ready())

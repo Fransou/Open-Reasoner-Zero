@@ -282,25 +282,25 @@ class RayPPOTrainer:
             logger.info(f"experiences size: {len(experiences)}")
 
         # 2. visualization generated results examples
-        n_to_log = min(len(experiences), 8)
-        for i in range(n_to_log):
-            expe = experiences[i]
-            if hasattr(self.writer, "update_table"):
-                for j in range(len(expe.sequences)):
-                    vis = self._detokenize(expe.sequences[j][: int(expe.info["total_length"].flatten()[j])])
-                    self.writer.update_table(
-                        "generated_sequences",
-                        self.global_step,
-                        {
-                            "sequence": vis,
-                            "custom_rewards": expe.info["custom_rewards"][j].mean().item(),
-                        },
-                    )
-                self.writer.upload_table("generated_sequences")
-            else:
-                vis = self._detokenize(expe.sequences[0][: int(expe.info["total_length"].flatten()[0])])
-                self.writer.add_text("generated_sequences", vis, self.global_step, infos = expe.info)
-                self.writer.flush()
+        # n_to_log = min(len(experiences), 8)
+        # for i in range(n_to_log):
+        #     expe = experiences[i]
+        #     if hasattr(self.writer, "update_table"):
+        #         for j in range(len(expe.sequences)):
+        #             vis = self._detokenize(expe.sequences[j][: int(expe.info["total_length"].flatten()[j])])
+        #             self.writer.update_table(
+        #                 "generated_sequences",
+        #                 self.global_step,
+        #                 {
+        #                     "sequence": vis,
+        #                     "custom_rewards": expe.info["custom_rewards"][j].mean().item(),
+        #                 },
+        #             )
+        #         self.writer.upload_table("generated_sequences")
+        #     else:
+        #         vis = self._detokenize(expe.sequences[0][: int(expe.info["total_length"].flatten()[0])])
+        #         self.writer.add_text("generated_sequences", vis, self.global_step, infos = expe.info)
+        #         self.writer.flush()
 
         # 3. calculate advantages and returns / along with tensorboard logging
         avg_rewards = 0
@@ -652,6 +652,7 @@ class RayPPOTrainer:
                     {"GPU": cfg.actor_num_gpus_per_node, "CPU": cfg.actor_num_gpus_per_node}
                     for _ in range(cfg.actor_num_nodes)
                 ]
+
                 pg = placement_group(bundles, strategy="PACK")
                 ray.get(pg.ready())
 

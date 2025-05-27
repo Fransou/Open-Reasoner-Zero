@@ -354,7 +354,6 @@ class PolicyRayActorBase(RayActor):
         self._setup_distributed(strategy)
 
         ds_config = strategy.get_ds_train_config(is_actor=True)
-        print("***\n", self._rank, "ds_config:", ds_config, "\n***")
         actor = Actor(
             pretrain,
             use_flash_attention_2=strategy.args.flash_attn,
