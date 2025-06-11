@@ -331,17 +331,25 @@ class RayPPOTrainer:
 
         # 4. tensorboard logging
         logger.info(
-            f"avg_raw_rewards: {avg_rewards / len(experiences)}, avg_kl: {avg_kl / len(experiences)}, avg_response_length: {avg_response_length / len(experiences)}, avg_orm_score: {avg_orm_score / len(experiences)}, avg_custom_rewards: {avg_custom_rewards / len(experiences)}"
+            f"[self.global_step] avg_raw_rewards: {avg_rewards / len(experiences)}, avg_kl: {avg_kl / len(experiences)}, avg_response_length: {avg_response_length / len(experiences)}, avg_orm_score: {avg_orm_score / len(experiences)}, avg_custom_rewards: {avg_custom_rewards / len(experiences)}"
         )
-        self.writer.add_scalar("avg_raw_rewards", avg_rewards / len(experiences), self.global_step)
-        self.writer.add_scalar("avg_kl", avg_kl / len(experiences), self.global_step)
-        self.writer.add_scalar("avg_kl_max", avg_kl_max / len(experiences), self.global_step)
-        self.writer.add_scalar("avg_response_length", avg_response_length / len(experiences), self.global_step)
-        self.writer.add_scalar("avg_orm_score", avg_orm_score / len(experiences), self.global_step)
-        self.writer.add_scalar("avg_custom_rewards", avg_custom_rewards / len(experiences), self.global_step)
-        self.writer.add_scalar("avg_raw_advantages", avg_advantages / len(experiences), self.global_step)
-        self.writer.add_scalar("avg_raw_advantages_abs", avg_advantages_abs / len(experiences), self.global_step)
-        self.writer.flush()
+        async with Timer("Logging with writer"):
+            to_log = {
+                "avg_raw_rewards": avg_rewards / len(experiences),
+                "avg_kl": avg_kl / len(experiences),
+                "avg_kl_max": avg_kl_max / len(experiences),
+                "avg_response_length": avg_response_length / len(experiences),
+                "avg_orm_score": avg_orm_score / len(experiences),
+                "avg_custom_rewards": avg_custom_rewards / len(experiences),
+                "avg_raw_advantages": avg_advantages / len(experiences),
+                "avg_raw_advantages_abs": avg_advantages_abs / len(experiences),
+            }
+            if hasattr(self.writer, add_dict):
+                self.writer.add_dict(to_log, step=self.global_step)
+            else:
+                for k,v in to_log.items():
+                    self.writer.add_scalar(k, v, self.global_step)
+            self.writer.flush()
 
     @torch.no_grad()
     async def inference_and_calculates(
