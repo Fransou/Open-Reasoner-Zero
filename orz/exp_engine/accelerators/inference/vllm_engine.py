@@ -25,18 +25,6 @@ class LLMActor:
                 kwargs[
                     "worker_cls"
                 ] = "orz.exp_engine.accelerators.inference.vllm_worker_wrap.OffloadableVLLMWorker"
-            else:
-                RayWorkerWrapperPath = vllm.executor.ray_utils
-
-                class RayWorkerWrapper(RayWorkerWrapperPath.RayWorkerWrapper):
-                    def __init__(self, *args, **kwargs) -> None:
-                        kwargs[
-                            "worker_module_name"
-                        ] = "orz.exp_engine.accelerators.inference.vllm_worker_wrap"
-                        kwargs["worker_class_name"] = "OffloadableVLLMWorker"
-                        super().__init__(*args, **kwargs)
-
-                RayWorkerWrapperPath.RayWorkerWrapper = RayWorkerWrapper
 
         kwargs["enforce_eager"] = True
         self.llm = vllm.LLM(*args, **kwargs)
@@ -45,6 +33,7 @@ class LLMActor:
         self.cache_config = self.llm.llm_engine.cache_config
         self.lora_config = self.llm.llm_engine.vllm_config.lora_config
         self.parallel_config = self.llm.llm_engine.vllm_config.parallel_config
+        print(self.llm.llm_engine)
 
     def generate(self, *args, **kwargs):
         return self.llm.generate(*args, **kwargs)
