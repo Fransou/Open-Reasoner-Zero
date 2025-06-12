@@ -344,7 +344,7 @@ class RayPPOTrainer:
                 "avg_raw_advantages": avg_advantages / len(experiences),
                 "avg_raw_advantages_abs": avg_advantages_abs / len(experiences),
             }
-            if hasattr(self.writer, add_dict):
+            if hasattr(self.writer, "add_dict"):
                 self.writer.add_dict(to_log, step=self.global_step)
             else:
                 for k,v in to_log.items():

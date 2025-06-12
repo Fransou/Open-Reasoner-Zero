@@ -1,10 +1,12 @@
 from vllm.core.scheduler import Scheduler
 
 
+
 class LLMActor:
     def __init__(self, *args, **kwargs):
         import vllm
-
+        import os
+        os.environ["VLLM_USE_V1"]="0"
         self.__version__ = vllm.__version__
         assert self.__version__ >= "0.4.1", "OpenRLHF only supports vLLM >= 0.4.1"
 
